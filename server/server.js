@@ -27,7 +27,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['http://localhost:3000', 'http://127.0.0.1:3000']  
+    ? [
+      'https://school-management-system-pi-eight.vercel.app', // vercel
+      'https://school-management-system-*.vercel.app' // vercel preview deployments
+    ]  
     : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],

@@ -1,7 +1,7 @@
 // API Base URL
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:5000/api'
-  : '/api';
+  ? 'http://localhost:5000/api'  // For local development
+  : 'https://school-management-system-cvu0.onrender.com/api';  // render production
 
 // Storage Keys
 const STORAGE_KEYS = {
