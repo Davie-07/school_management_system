@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Kandara Technical College</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="school-name">KANDARA TECHNICAL COLLEGE</div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link" onclick="showSection('overview')">Dashboard</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('timetable')">Timetable</a></li>
+                <li><a href="#" class="nav-link" onclick="loadExamResults()">Results</a></li>
+                <li><a href="#" class="nav-link" onclick="loadFeeStatus()">Fees</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="student-info">
+                    <div class="avatar">
+                        <span id="userInitials">ST</span>
+                    </div>
+                    <h4 id="studentName">Loading...</h4>
+                    <p class="info-text">
+                        <span id="admissionNo">Loading...</span><br>
+                        <span id="studentCourse">Loading...</span>
+                    </p>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="overview" onclick="showSection('overview')">📊 Overview</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="timetable" onclick="showSection('timetable')">📅 Timetable</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="results" onclick="loadExamResults()">📝 Exam Results</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="fees" onclick="loadFeeStatus()">💰 Fee Status</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="announcements" onclick="showSection('announcements')">📢 Announcements</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="reports" onclick="showSection('reports')">📨 Reports</a></li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section">
+                    <div class="welcome-section">
+                        <h1>Welcome back, <span id="welcomeName">Student</span>! 👋</h1>
+                        <p class="date-time">
+                            <span id="currentDate"></span> • <span id="currentTime"></span>
+                        </p>
+                    </div>
+
+                    <div class="quote-section">
+                        <h4>Quote of the Day</h4>
+                        <p id="dailyQuote">"Education is the most powerful weapon which you can use to change the world."</p>
+                        <p id="quoteAuthor">- Nelson Mandela</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="attendanceRate">0%</div>
+                            <div class="stat-label">Attendance Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="averageGrade">-</div>
+                            <div class="stat-label">Average Grade</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="feeBalance">KES 0</div>
+                            <div class="stat-label">Fee Balance</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="upcomingExams">0</div>
+                            <div class="stat-label">Upcoming Exams</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="action-card" onclick="showSection('timetable')">
+                            📅 View Timetable
+                        </button>
+                        <button class="action-card" onclick="loadFeeStatus()">
+                            💳 Check Fees
+                        </button>
+                        <button class="action-card" onclick="loadExamResults()">
+                            📊 Exam Results
+                        </button>
+                        <button class="action-card" onclick="generateSecurityReceipt()">
+                            🎫 Security Receipt
+                        </button>
+                    </div>
+
+                    <section class="announcements-preview">
+                        <h3>Recent Announcements</h3>
+                        <div id="announcementsList">
+                            <p>Loading announcements...</p>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Timetable Section -->
+                <section id="timetable" class="dashboard-section" style="display: none;">
+                    <h2>Weekly Timetable</h2>
+                    <div class="card">
+                        <div id="timetableGrid" class="timetable-grid">
+                            Loading timetable...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Results Section -->
+                <section id="results" class="dashboard-section" style="display: none;">
+                    <h2>Exam Results</h2>
+                    <div id="examResultsList" class="results-container">
+                        Loading results...
+                    </div>
+                </section>
+
+                <!-- Fees Section -->
+                <section id="fees" class="dashboard-section" style="display: none;">
+                    <h2>Fee Payment Status</h2>
+                    
+                    <div class="fee-summary">
+                        <div class="summary-item">
+                            <span class="label">Total Fees:</span>
+                            <span class="value" id="totalFees">KES 0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Paid:</span>
+                            <span class="value" id="totalPaid">KES 0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Balance:</span>
+                            <span class="value" id="totalBalance">KES 0</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Payment Progress</h3>
+                        <canvas id="feeChart" width="300" height="300"></canvas>
+                    </div>
+
+                    <div class="card">
+                        <h3>Payment History</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Receipt No.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentHistory">
+                                <tr><td colspan="4">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section id="announcements" class="dashboard-section" style="display: none;">
+                    <h2>Announcements</h2>
+                    <div id="announcementsFullList" class="announcements-container">
+                        Loading announcements...
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="dashboard-section" style="display: none;">
+                    <h2>Submit Report</h2>
+                    
+                    <div class="card">
+                        <form id="reportForm">
+                            <div class="form-group">
+                                <label class="form-label">Report Type</label>
+                                <select class="form-control" id="reportType">
+                                    <option value="">Select type</option>
+                                    <option value="exam_misprint">Exam Misprint</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="technical_issue">Technical Issue</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Target</label>
+                                <select class="form-control" id="targetDashboard">
+                                    <option value="teacher">Teacher</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="reportSubject" placeholder="Brief description">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="reportDescription" rows="5"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Priority</label>
+                                <select class="form-control" id="reportPriority">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+
+                            <button type="button" class="btn" onclick="submitReport()">Submit Report</button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/student.js"></script>
+</body>
+</html>

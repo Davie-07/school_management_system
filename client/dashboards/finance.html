@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard - Kandara Technical College</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="school-name">KANDARA TECHNICAL COLLEGE - FINANCE</div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" onclick="showSection('overview')">Dashboard</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('fees')">Fee Management</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('payments')">Payments</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('reports')">Reports</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="student-info">
+                    <div class="avatar" style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);">
+                        <span id="userInitials">FO</span>
+                    </div>
+                    <h4 id="financeName">Finance Officer</h4>
+                    <p class="info-text">
+                        <span id="accountId">Loading...</span><br>
+                        Finance Department
+                    </p>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="overview" onclick="showSection('overview')">📊 Overview</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="fees" onclick="showSection('fees')">💰 Fee Management</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="payments" onclick="showSection('payments')">💳 Payments</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="gatepass" onclick="showSection('gatepass')">🎫 Gatepass Control</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="defaulters" onclick="showSection('defaulters')">⚠️ Defaulters</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="reports" onclick="showSection('reports')">📈 Reports</a></li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section">
+                    <div class="welcome-section" style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);">
+                        <h1>Finance Dashboard</h1>
+                        <p class="date-time">
+                            <span id="currentDate"></span> • <span id="currentTime"></span>
+                        </p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="todayCollection">KES 0</div>
+                            <div class="stat-label">Today's Collection</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="monthCollection">KES 0</div>
+                            <div class="stat-label">This Month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="activeDefaulters">0</div>
+                            <div class="stat-label">Defaulters</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="allowedGatepasses">0</div>
+                            <div class="stat-label">Allowed Gatepasses</div>
+                        </div>
+                    </div>
+
+                    <section class="card">
+                        <h3>Today's Collection Breakdown</h3>
+                        <div id="todayBreakdown" class="collection-breakdown">
+                            Loading...
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Monthly Collection Trend</h3>
+                        <canvas id="monthlyChart" height="100"></canvas>
+                    </section>
+
+                    <section class="card">
+                        <h3>Top Defaulters</h3>
+                        <div id="topDefaultersList">
+                            Loading defaulters...
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Fee Management Section -->
+                <section id="fees" class="dashboard-section" style="display: none;">
+                    <h2>Fee Management</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateFeeModal()">Create Fee Record</button>
+                        <input type="text" class="form-control" id="studentSearch" placeholder="Search by admission number..." style="max-width: 300px;">
+                        <button class="btn btn-secondary" onclick="searchStudent()">Search</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Admission No.</th>
+                                    <th>Student Name</th>
+                                    <th>Course</th>
+                                    <th>Total Fees</th>
+                                    <th>Paid</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feesTableBody">
+                                <tr><td colspan="8">Loading fee records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Payments Section -->
+                <section id="payments" class="dashboard-section" style="display: none;">
+                    <h2>Record Payment</h2>
+                    
+                    <div class="card">
+                        <h3>Student Selection</h3>
+                        <div class="form-group">
+                            <label class="form-label">Enter Admission Number</label>
+                            <input type="text" class="form-control" id="paymentAdmissionNo" placeholder="e.g., KTC2025001">
+                            <button class="btn mt-2" onclick="loadStudentFeeDetails()">Load Details</button>
+                        </div>
+                    </div>
+
+                    <div id="studentFeeDetails" style="display: none;">
+                        <div class="card">
+                            <h3>Student Details</h3>
+                            <div id="studentInfo">
+                                <!-- Student information will be displayed here -->
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Record New Payment</h3>
+                            <form id="paymentForm">
+                                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label class="form-label">Amount (KES)</label>
+                                        <input type="number" class="form-control" id="paymentAmount" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Payment Method</label>
+                                        <select class="form-control" id="paymentMethod">
+                                            <option value="cash">Cash</option>
+                                            <option value="mpesa">M-Pesa</option>
+                                            <option value="bank">Bank Transfer</option>
+                                            <option value="cheque">Cheque</option>
+                                            <option value="card">Card</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Reference Number</label>
+                                    <input type="text" class="form-control" id="referenceNumber" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Notes</label>
+                                    <textarea class="form-control" id="paymentNotes" rows="3"></textarea>
+                                </div>
+                                <button type="button" class="btn" onclick="recordPayment()">Record Payment</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gatepass Control Section -->
+                <section id="gatepass" class="dashboard-section" style="display: none;">
+                    <h2>Gatepass Authorization</h2>
+                    
+                    <div class="card">
+                        <div class="form-group">
+                            <label class="form-label">Search Student</label>
+                            <input type="text" class="form-control" id="gatepassSearch" placeholder="Enter admission number">
+                            <button class="btn mt-2" onclick="searchGatepassStudent()">Search</button>
+                        </div>
+                    </div>
+
+                    <div id="gatepassStudentDetails" style="display: none;">
+                        <div class="card">
+                            <h3>Student Fee Status</h3>
+                            <div id="gatepassStudentInfo">
+                                <!-- Student gatepass info will be displayed here -->
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Gatepass Authorization</h3>
+                            <div class="form-group">
+                                <label class="form-label">Authorization Status</label>
+                                <select class="form-control" id="gatepassStatus">
+                                    <option value="allow">Allow Gatepass</option>
+                                    <option value="deny">Deny Gatepass</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="allowUntilGroup">
+                                <label class="form-label">Allow Until (for partial payments)</label>
+                                <input type="date" class="form-control" id="allowUntilDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Reason/Notes</label>
+                                <textarea class="form-control" id="gatepassReason" rows="3"></textarea>
+                            </div>
+                            <button class="btn" onclick="updateGatepassStatus()">Update Status</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Defaulters Section -->
+                <section id="defaulters" class="dashboard-section" style="display: none;">
+                    <h2>Fee Defaulters</h2>
+                    
+                    <div class="toolbar">
+                        <select class="form-control" id="defaulterCourseFilter" onchange="loadDefaulters()" style="max-width: 300px;">
+                            <option value="">All Courses</option>
+                        </select>
+                        <input type="number" class="form-control" id="minBalance" placeholder="Minimum balance" value="1000" style="max-width: 200px;">
+                        <button class="btn" onclick="loadDefaulters()">Filter</button>
+                        <button class="btn btn-secondary" onclick="exportDefaulters()">Export</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Admission No.</th>
+                                    <th>Name</th>
+                                    <th>Course</th>
+                                    <th>Contact</th>
+                                    <th>Total Fees</th>
+                                    <th>Paid</th>
+                                    <th>Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="defaultersTableBody">
+                                <tr><td colspan="8">Loading defaulters...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="dashboard-section" style="display: none;">
+                    <h2>Financial Reports</h2>
+                    
+                    <div class="report-cards">
+                        <div class="card">
+                            <h3>Collection Report</h3>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <input type="date" class="form-control" id="collectionStartDate">
+                                <input type="date" class="form-control" id="collectionEndDate">
+                            </div>
+                            <button class="btn mt-2" onclick="generateCollectionReport()">Generate Report</button>
+                        </div>
+
+                        <div class="card">
+                            <h3>Fee Structure Report</h3>
+                            <select class="form-control" id="reportCourse">
+                                <option value="">All Courses</option>
+                            </select>
+                            <button class="btn mt-2" onclick="generateFeeStructureReport()">Generate Report</button>
+                        </div>
+
+                        <div class="card">
+                            <h3>Payment Summary</h3>
+                            <select class="form-control" id="paymentSummaryPeriod">
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="term">This Term</option>
+                            </select>
+                            <button class="btn mt-2" onclick="generatePaymentSummary()">Generate Summary</button>
+                        </div>
+                    </div>
+
+                    <div id="reportResults" class="card mt-4" style="display: none;">
+                        <h3>Report Results</h3>
+                        <div id="reportContent">
+                            <!-- Report content will be displayed here -->
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/finance.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

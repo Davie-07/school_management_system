@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Kandara Technical College</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="school-name">KANDARA TECHNICAL COLLEGE - ADMIN</div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" onclick="showSection('overview')">Dashboard</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('users')">Users</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('courses')">Courses</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('announcements')">Announcements</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="student-info">
+                    <div class="avatar" style="background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);">
+                        <span id="userInitials">AD</span>
+                    </div>
+                    <h4 id="adminName">System Admin</h4>
+                    <p class="info-text">
+                        <span id="accountId">Loading...</span><br>
+                        Administrator
+                    </p>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="overview" onclick="showSection('overview')">📊 Overview</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="users" onclick="showSection('users')">👥 User Management</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="courses" onclick="showSection('courses')">📚 Course Management</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="announcements" onclick="showSection('announcements')">📢 Announcements</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="reports" onclick="showSection('reports')">📨 Reports</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="security" onclick="showSection('security')">🔐 Security</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="system" onclick="showSection('system')">⚙️ System Settings</a></li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section">
+                    <div class="welcome-section" style="background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);">
+                        <h1>Admin Dashboard</h1>
+                        <p class="date-time">
+                            <span id="currentDate"></span> • <span id="currentTime"></span>
+                        </p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalStudents">0</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalTeachers">0</div>
+                            <div class="stat-label">Teachers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="activeCourses">0</div>
+                            <div class="stat-label">Active Courses</div>
+                        </div>
+                    </div>
+
+                    <section class="card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="action-card" onclick="showCreateUserModal()">
+                                ➕ Add User
+                            </button>
+                            <button class="action-card" onclick="showCreateCourseModal()">
+                                📚 Add Course
+                            </button>
+                            <button class="action-card" onclick="showCreateAnnouncementModal()">
+                                📢 New Announcement
+                            </button>
+                            <button class="action-card" onclick="showSection('security')">
+                                🔑 Recovery Codes
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>System Health</h3>
+                        <div class="system-health">
+                            <div class="health-item">
+                                <span class="label">Database Status:</span>
+                                <span class="value status-active">Connected</span>
+                            </div>
+                            <div class="health-item">
+                                <span class="label">Active Sessions:</span>
+                                <span class="value" id="activeSessions">0</span>
+                            </div>
+                            <div class="health-item">
+                                <span class="label">Pending Reports:</span>
+                                <span class="value" id="pendingReports">0</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Recent Activities</h3>
+                        <div id="recentActivities" class="activities-list">
+                            Loading activities...
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Users Management Section -->
+                <section id="users" class="dashboard-section" style="display: none;">
+                    <h2>User Management</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateUserModal()">Add New User</button>
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search users..." 
+                               style="max-width: 300px;">
+                        <select class="form-control" id="roleFilter" onchange="filterUsers()" style="max-width: 200px;">
+                            <option value="">All Roles</option>
+                            <option value="student">Students</option>
+                            <option value="teacher">Teachers</option>
+                            <option value="admin">Admin</option>
+                            <option value="finance">Finance</option>
+                            <option value="gatepass">Gatepass</option>
+                        </select>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>ID/Admission</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="6">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Courses Management Section -->
+                <section id="courses" class="dashboard-section" style="display: none;">
+                    <h2>Course Management</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateCourseModal()">Add New Course</button>
+                    </div>
+
+                    <div class="courses-grid" id="coursesList">
+                        Loading courses...
+                    </div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section id="announcements" class="dashboard-section" style="display: none;">
+                    <h2>Announcements</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateAnnouncementModal()">New Announcement</button>
+                    </div>
+
+                    <div id="announcementsList" class="announcements-container">
+                        Loading announcements...
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="dashboard-section" style="display: none;">
+                    <h2>System Reports</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalReports">0</div>
+                            <div class="stat-label">Total Reports</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="pendingReportsCount">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="resolvedReports">0</div>
+                            <div class="stat-label">Resolved</div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Reporter</th>
+                                    <th>Type</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody">
+                                <tr><td colspan="6">Loading reports...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section id="security" class="dashboard-section" style="display: none;">
+                    <h2>Security & Recovery</h2>
+                    
+                    <div class="card">
+                        <h3>Password Recovery Codes</h3>
+                        <div id="recoveryCodes" class="recovery-codes-list">
+                            Loading recovery codes...
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Recent Login Activity</h3>
+                        <div id="loginActivity" class="activities-list">
+                            Loading login activity...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Settings Section -->
+                <section id="system" class="dashboard-section" style="display: none;">
+                    <h2>System Settings</h2>
+                    
+                    <div class="card">
+                        <h3>School Information</h3>
+                        <form id="schoolSettingsForm">
+                            <div class="form-group">
+                                <label class="form-label">School Name</label>
+                                <input type="text" class="form-control" value="Kandara Technical College" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">School Code</label>
+                                <input type="text" class="form-control" value="KTC2025" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Academic Year</label>
+                                <input type="text" class="form-control" value="2025" id="academicYear">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Current Term</label>
+                                <select class="form-control" id="currentTerm">
+                                    <option value="Term 1">Term 1</option>
+                                    <option value="Term 2">Term 2</option>
+                                    <option value="Term 3">Term 3</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- User Creation Modal Template -->
+    <template id="userModalTemplate">
+        <form id="createUserForm">
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <select class="form-control" id="userRole" onchange="toggleUserFields()">
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="finance">Finance Officer</option>
+                    <option value="gatepass">Gatepass Officer</option>
+                    <option value="admin">Administrator</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="userEmail" required>
+            </div>
+            <div class="form-group" id="admissionNumberGroup" style="display: none;">
+                <label class="form-label">Admission Number</label>
+                <input type="text" class="form-control" id="admissionNumber">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Course</label>
+                <select class="form-control" id="userCourse">
+                    <option value="">Select Course</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="userPassword" value="TempPass@123">
+            </div>
+        </form>
+    </template>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

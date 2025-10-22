@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Kandara Technical College</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="school-name">KANDARA TECHNICAL COLLEGE - TEACHER</div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" onclick="showSection('overview')">Dashboard</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('schedule')">Schedule</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('students')">Students</a></li>
+                <li><a href="#" class="nav-link" onclick="showSection('exams')">Exams</a></li>
+                <li><a href="#" class="nav-link" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="student-info">
+                    <div class="avatar" style="background: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);">
+                        <span id="userInitials">TC</span>
+                    </div>
+                    <h4 id="teacherName">Loading...</h4>
+                    <p class="info-text">
+                        <span id="accountId">Loading...</span><br>
+                        Teacher
+                    </p>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="overview" onclick="showSection('overview')">📊 Overview</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="schedule" onclick="showSection('schedule')">📅 My Schedule</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="students" onclick="showSection('students')">👥 My Students</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="exams" onclick="showSection('exams')">📝 Exams</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="attendance" onclick="showSection('attendance')">✅ Attendance</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="reports" onclick="showSection('reports')">📨 Reports</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="announcements" onclick="showSection('announcements')">📢 Announcements</a></li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section">
+                    <div class="welcome-section" style="background: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);">
+                        <h1>Teacher Dashboard</h1>
+                        <p class="date-time">
+                            <span id="currentDate"></span> • <span id="currentTime"></span>
+                        </p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalCourses">0</div>
+                            <div class="stat-label">Assigned Courses</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalStudents">0</div>
+                            <div class="stat-label">Total Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="todayClasses">0</div>
+                            <div class="stat-label">Today's Classes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="pendingExams">0</div>
+                            <div class="stat-label">Pending Exams</div>
+                        </div>
+                    </div>
+
+                    <section class="card">
+                        <h3>Today's Schedule</h3>
+                        <div id="todaySchedule" class="schedule-list">
+                            Loading schedule...
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="action-card" onclick="showCreateScheduleModal()">
+                                📅 Create Schedule
+                            </button>
+                            <button class="action-card" onclick="showCreateExamModal()">
+                                📝 Create Exam
+                            </button>
+                            <button class="action-card" onclick="showSection('students')">
+                                👥 View Students
+                            </button>
+                            <button class="action-card" onclick="showMarkAttendanceModal()">
+                                ✅ Mark Attendance
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Recent Exam Misprints</h3>
+                        <div id="recentMisprints" class="reports-list">
+                            Loading reports...
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Schedule Section -->
+                <section id="schedule" class="dashboard-section" style="display: none;">
+                    <h2>My Schedule</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateScheduleModal()">Create New Schedule</button>
+                        <input type="week" class="form-control" id="weekSelector" onchange="loadWeekSchedule()" style="max-width: 200px;">
+                    </div>
+
+                    <div class="card">
+                        <div id="scheduleGrid" class="timetable-grid">
+                            Loading schedule...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="students" class="dashboard-section" style="display: none;">
+                    <h2>My Students</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showAddStudentModal()">Add Student</button>
+                        <select class="form-control" id="courseFilter" onchange="filterStudents()" style="max-width: 300px;">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Admission No.</th>
+                                    <th>Name</th>
+                                    <th>Course</th>
+                                    <th>Level</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="6">Loading students...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Exams Section -->
+                <section id="exams" class="dashboard-section" style="display: none;">
+                    <h2>Exam Management</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateExamModal()">Create New Exam</button>
+                        <select class="form-control" id="examFilter" onchange="filterExams()" style="max-width: 200px;">
+                            <option value="">All Exams</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="marked">Marked</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+
+                    <div id="examsList" class="exams-container">
+                        Loading exams...
+                    </div>
+                </section>
+
+                <!-- Attendance Section -->
+                <section id="attendance" class="dashboard-section" style="display: none;">
+                    <h2>Attendance Management</h2>
+                    
+                    <div class="card">
+                        <h3>Mark Attendance</h3>
+                        <div class="form-group">
+                            <label class="form-label">Select Schedule</label>
+                            <select class="form-control" id="scheduleSelect" onchange="loadAttendanceList()">
+                                <option value="">Select a schedule</option>
+                            </select>
+                        </div>
+
+                        <div id="attendanceList" class="attendance-list">
+                            Select a schedule to mark attendance
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="dashboard-section" style="display: none;">
+                    <h2>Reports & Feedback</h2>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="showReportTab('misprints')">Exam Misprints</button>
+                        <button class="tab-btn" onclick="showReportTab('suggestions')">Suggestions</button>
+                    </div>
+
+                    <div id="misprints" class="tab-content">
+                        <h3>Exam Misprint Reports</h3>
+                        <div id="misprintsList" class="reports-container">
+                            Loading misprints...
+                        </div>
+                    </div>
+
+                    <div id="suggestions" class="tab-content" style="display: none;">
+                        <h3>Student Suggestions</h3>
+                        <div id="suggestionsList" class="reports-container">
+                            Loading suggestions...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section id="announcements" class="dashboard-section" style="display: none;">
+                    <h2>Announcements</h2>
+                    
+                    <div class="toolbar">
+                        <button class="btn" onclick="showCreateAnnouncementModal()">Create Announcement</button>
+                    </div>
+
+                    <div id="announcementsList" class="announcements-container">
+                        Loading announcements...
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/teacher.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+### Kandara Technical College API Tests
+### Use with VS Code REST Client extension or similar tools
+
+@baseUrl = http://localhost:5000/api
+@token = YOUR_JWT_TOKEN_HERE
+@contentType = application/json
+
+### Health Check
+GET {{baseUrl}}/health
+
+### ========== AUTHENTICATION ==========
+
+### Login as Admin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@ktc.ac.ke",
+  "identifier": "100001",
+  "course": "1",
+  "password": "Admin@2025"
+}
+
+### Login as Teacher
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teacher1@ktc.ac.ke",
+  "identifier": "400001",
+  "course": "1",
+  "password": "Teacher@2025"
+}
+
+### Login as Finance
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "finance@ktc.ac.ke",
+  "identifier": "200001",
+  "course": "1",
+  "password": "Finance@2025"
+}
+
+### Register Student
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Jane",
+  "lastName": "Student",
+  "email": "jane.student@example.com",
+  "admissionNumber": "KTC2025001",
+  "password": "Student@123",
+  "course": "COURSE_ID_HERE",
+  "level": "LEVEL_ID_HERE",
+  "termsAccepted": true
+}
+
+### Get Current User
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### ========== COURSES ==========
+
+### Get All Courses (Public)
+GET {{baseUrl}}/courses
+
+### Get Course by ID
+GET {{baseUrl}}/courses/COURSE_ID_HERE
+
+### Create Course (Admin Only)
+POST {{baseUrl}}/courses
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Computer Science",
+  "code": "CS",
+  "description": "Advanced Computer Science program",
+  "department": "Technology",
+  "duration": "4 years",
+  "fees": {
+    "total": 200000,
+    "perTerm": 70000,
+    "perYear": 200000
+  },
+  "maxStudents": 150
+}
+
+### ========== USERS ==========
+
+### Get All Users (Admin Only)
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### Create Teacher (Admin Only)
+POST {{baseUrl}}/users
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Mary",
+  "lastName": "Teacher",
+  "email": "mary.teacher@ktc.ac.ke",
+  "role": "teacher",
+  "course": "COURSE_ID_HERE",
+  "password": "TempPass@123"
+}
+
+### ========== SCHEDULES ==========
+
+### Get My Schedules
+GET {{baseUrl}}/schedules
+Authorization: Bearer {{token}}
+
+### Get Weekly Timetable
+GET {{baseUrl}}/schedules/timetable
+Authorization: Bearer {{token}}
+
+### Create Schedule (Teacher/Admin)
+POST {{baseUrl}}/schedules
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "course": "COURSE_ID_HERE",
+  "level": "LEVEL_ID_HERE",
+  "title": "Mathematics Lecture",
+  "date": "2025-02-20",
+  "startTime": "09:00",
+  "endTime": "11:00",
+  "venue": "Room 101",
+  "type": "lecture"
+}
+
+### ========== EXAMS ==========
+
+### Get Exams
+GET {{baseUrl}}/exams
+Authorization: Bearer {{token}}
+
+### Create Exam (Teacher/Admin)
+POST {{baseUrl}}/exams
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Mathematics CAT 1",
+  "course": "COURSE_ID_HERE",
+  "level": "LEVEL_ID_HERE",
+  "examType": "CAT",
+  "totalMarks": 100,
+  "passMark": 50,
+  "date": "2025-03-15",
+  "duration": 120,
+  "venue": "Exam Hall A"
+}
+
+### ========== FEES ==========
+
+### Get My Fees (Student)
+GET {{baseUrl}}/fees
+Authorization: Bearer {{token}}
+
+### Create Fee Record (Finance/Admin)
+POST {{baseUrl}}/fees
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "student": "STUDENT_ID_HERE",
+  "academicYear": "2025",
+  "term": "Term 1",
+  "course": "COURSE_ID_HERE",
+  "level": "LEVEL_ID_HERE",
+  "feeStructure": {
+    "tuition": 35000,
+    "registration": 2000,
+    "library": 1500,
+    "laboratory": 3000,
+    "examination": 2500,
+    "medical": 1000
+  }
+}
+
+### ========== GATEPASS ==========
+
+### Verify Student (Gatepass Officer)
+POST {{baseUrl}}/gatepass/verify
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "admissionNumber": "KTC2025001"
+}
+
+### Get Today's Verifications
+GET {{baseUrl}}/gatepass/today
+Authorization: Bearer {{token}}
+
+### ========== ANNOUNCEMENTS ==========
+
+### Get Announcements
+GET {{baseUrl}}/announcements
+Authorization: Bearer {{token}}
+
+### Create Announcement (Admin/Teacher)
+POST {{baseUrl}}/announcements
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Important Notice",
+  "content": "This is an important announcement for all students.",
+  "priority": "high",
+  "targetAudience": {
+    "roles": ["student"]
+  }
+}
+
+### ========== REPORTS ==========
+
+### Get My Reports
+GET {{baseUrl}}/reports
+Authorization: Bearer {{token}}
+
+### Submit Report
+POST {{baseUrl}}/reports
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "reportType": "suggestion",
+  "targetDashboard": "admin",
+  "subject": "Library Hours Extension",
+  "description": "I suggest extending library hours to 9 PM",
+  "priority": "medium"
+}
+
+### ========== DASHBOARD DATA ==========
+
+### Get Student Dashboard
+GET {{baseUrl}}/dashboard/student
+Authorization: Bearer {{token}}
+
+### Get Teacher Dashboard
+GET {{baseUrl}}/dashboard/teacher
+Authorization: Bearer {{token}}
+
+### Get Admin Dashboard
+GET {{baseUrl}}/dashboard/admin
+Authorization: Bearer {{token}}
+
+### Get Finance Dashboard
+GET {{baseUrl}}/dashboard/finance
+Authorization: Bearer {{token}}
+
+### Get Gatepass Dashboard
+GET {{baseUrl}}/dashboard/gatepass
+Authorization: Bearer {{token}}

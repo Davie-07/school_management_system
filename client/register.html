@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Kandara Technical College</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-white) 100%);
+        }
+        .register-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px var(--shadow-light);
+            overflow: hidden;
+        }
+        .register-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-orange) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .register-body {
+            padding: 40px 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .terms-box {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <h1 class="school-name">KANDARA TECHNICAL COLLEGE</h1>
+                <p style="margin-top: 10px; opacity: 0.9;">Student Registration</p>
+            </div>
+            
+            <div class="register-body">
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-green);">Personal Information</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="middleName">
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" required>
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Admission Number *</label>
+                            <input type="text" class="form-control" id="admissionNumber" required 
+                                   style="text-transform: uppercase;" placeholder="e.g., KTC2025001">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" 
+                                   placeholder="+254 700 123 456">
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px; color: var(--primary-green);">Academic Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Course *</label>
+                            <select class="form-control" id="course" required onchange="loadLevels()">
+                                <option value="">Select your course</option>
+                            </select>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Level *</label>
+                            <select class="form-control" id="level" required disabled>
+                                <option value="">Select course first</option>
+                            </select>
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px; color: var(--primary-green);">Additional Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select class="form-control" id="gender">
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dateOfBirth" 
+                                   max="2010-12-31" min="1970-01-01">
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <textarea class="form-control" id="address" rows="2" 
+                                  placeholder="Enter your residential address"></textarea>
+                        <span class="form-error"></span>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px; color: var(--primary-green);">Security</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="password" required 
+                                   minlength="6" placeholder="At least 6 characters">
+                            <span class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password *</label>
+                            <input type="password" class="form-control" id="confirmPassword" required 
+                                   minlength="6">
+                            <span class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px; color: var(--primary-green);">Terms and Conditions</h3>
+
+                    <div class="terms-box">
+                        <h4>Terms of Service</h4>
+                        <p>By registering with Kandara Technical College School Management System, you agree to:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Provide accurate and truthful information</li>
+                            <li>Maintain the confidentiality of your account credentials</li>
+                            <li>Use the system responsibly and in accordance with college policies</li>
+                            <li>Comply with all academic regulations and guidelines</li>
+                            <li>Respect the privacy and rights of other users</li>
+                            <li>Not engage in any unauthorized or illegal activities</li>
+                            <li>Accept that the college may modify these terms at any time</li>
+                        </ul>
+                        <p style="margin-top: 10px;">The college reserves the right to suspend or terminate accounts that violate these terms.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="termsAccepted" required style="margin-top: 4px;">
+                            <span>I have read and agree to the Terms and Conditions *</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn w-full mb-3">Register Account</button>
+
+                    <div class="text-center">
+                        <span>Already have an account?</span>
+                        <a href="login.html">Login here</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Load courses on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadCourses();
+        });
+
+        // Load courses from API
+        async function loadCourses() {
+            try {
+                // For now, use dummy data
+                const courses = [
+                    { id: '1', name: 'Information Technology' },
+                    { id: '2', name: 'Electrical Engineering' },
+                    { id: '3', name: 'Mechanical Engineering' },
+                    { id: '4', name: 'Business Administration' },
+                    { id: '5', name: 'Hospitality Management' }
+                ];
+                
+                const courseSelect = document.getElementById('course');
+                courseSelect.innerHTML = '<option value="">Select your course</option>';
+                
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.name;
+                    courseSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+
+        // Load levels based on selected course
+        async function loadLevels() {
+            const courseId = document.getElementById('course').value;
+            const levelSelect = document.getElementById('level');
+            
+            if (!courseId) {
+                levelSelect.disabled = true;
+                levelSelect.innerHTML = '<option value="">Select course first</option>';
+                return;
+            }
+            
+            try {
+                // For now, use dummy data
+                const levels = [
+                    { id: '1', name: 'Certificate - Year 1' },
+                    { id: '2', name: 'Certificate - Year 2' },
+                    { id: '3', name: 'Diploma - Year 1' },
+                    { id: '4', name: 'Diploma - Year 2' },
+                    { id: '5', name: 'Diploma - Year 3' }
+                ];
+                
+                levelSelect.disabled = false;
+                levelSelect.innerHTML = '<option value="">Select your level</option>';
+                
+                levels.forEach(level => {
+                    const option = document.createElement('option');
+                    option.value = level.id;
+                    option.textContent = level.name;
+                    levelSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading levels:', error);
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            // Validate passwords match
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (!validateForm('registerForm')) {
+                return;
+            }
+            
+            showLoading(true);
+            
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                middleName: document.getElementById('middleName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                admissionNumber: document.getElementById('admissionNumber').value.toUpperCase(),
+                phoneNumber: document.getElementById('phoneNumber').value,
+                course: document.getElementById('course').value,
+                level: document.getElementById('level').value,
+                gender: document.getElementById('gender').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                address: document.getElementById('address').value,
+                password: password,
+                termsAccepted: document.getElementById('termsAccepted').checked
+            };
+            
+            try {
+                const response = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.success) {
+                    saveAuthData(response.token, response.user);
+                    showAlert('Registration successful! Redirecting to your dashboard...', 'success');
+                    
+                    setTimeout(() => {
+                        redirectToDashboard('student');
+                    }, 2000);
+                }
+            } catch (error) {
+                showAlert(error.message || 'Registration failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>

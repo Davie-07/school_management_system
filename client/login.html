@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kandara Technical College</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-white) 100%);
+        }
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 40px var(--shadow-light);
+            overflow: hidden;
+        }
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-orange) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 40px 30px;
+        }
+        .user-type-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--bg-light);
+            padding: 5px;
+            border-radius: var(--radius-sm);
+        }
+        .user-type-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 500;
+        }
+        .user-type-btn.active {
+            background: var(--primary-green);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="school-name">KANDARA TECHNICAL COLLEGE</h1>
+                <p style="margin-top: 10px; opacity: 0.9;">School Management System</p>
+            </div>
+            
+            <div class="login-body">
+                <div class="user-type-toggle">
+                    <button class="user-type-btn active" onclick="switchUserType('student')">Student</button>
+                    <button class="user-type-btn" onclick="switchUserType('staff')">Staff</button>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" required 
+                               placeholder="Enter your email">
+                        <span class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" id="identifierLabel">Admission Number</label>
+                        <input type="text" class="form-control" id="identifier" required 
+                               placeholder="Enter your admission number">
+                        <span class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Course</label>
+                        <select class="form-control" id="course" required>
+                            <option value="">Select your course</option>
+                        </select>
+                        <span class="form-error"></span>
+                    </div>
+
+                    <div class="form-group" id="passwordGroup" style="display: none;">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" 
+                               placeholder="Enter your password">
+                        <span class="form-error"></span>
+                    </div>
+
+                    <button type="submit" class="btn w-full mb-3">Login</button>
+
+                    <div class="text-center">
+                        <a href="forgot-password.html">Forgot Password?</a>
+                        <span style="margin: 0 10px;">|</span>
+                        <a href="register.html">Register New Account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        let currentUserType = 'student';
+        
+        // Load courses on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadCourses();
+        });
+
+        // Load courses from API
+        async function loadCourses() {
+            try {
+                // For now, use dummy data
+                const courses = [
+                    { id: '1', name: 'Information Technology' },
+                    { id: '2', name: 'Electrical Engineering' },
+                    { id: '3', name: 'Mechanical Engineering' },
+                    { id: '4', name: 'Business Administration' },
+                    { id: '5', name: 'Hospitality Management' }
+                ];
+                
+                const courseSelect = document.getElementById('course');
+                courseSelect.innerHTML = '<option value="">Select your course</option>';
+                
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.name;
+                    courseSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+
+        function switchUserType(type) {
+            currentUserType = type;
+            
+            // Update button states
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update form fields
+            const identifierLabel = document.getElementById('identifierLabel');
+            const identifierInput = document.getElementById('identifier');
+            const passwordGroup = document.getElementById('passwordGroup');
+            
+            if (type === 'student') {
+                identifierLabel.textContent = 'Admission Number';
+                identifierInput.placeholder = 'Enter your admission number';
+                passwordGroup.style.display = 'none';
+                document.getElementById('password').removeAttribute('required');
+            } else {
+                identifierLabel.textContent = 'Account ID';
+                identifierInput.placeholder = 'Enter your 6-digit account ID';
+                passwordGroup.style.display = 'block';
+                document.getElementById('password').setAttribute('required', 'required');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            if (!validateForm('loginForm')) {
+                return;
+            }
+            
+            showLoading(true);
+            
+            const formData = {
+                email: document.getElementById('email').value,
+                identifier: document.getElementById('identifier').value,
+                course: document.getElementById('course').value
+            };
+            
+            if (currentUserType === 'staff') {
+                formData.password = document.getElementById('password').value;
+            }
+            
+            try {
+                const response = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.success) {
+                    saveAuthData(response.token, response.user);
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        redirectToDashboard(response.user.role);
+                    }, 1500);
+                }
+            } catch (error) {
+                showAlert(error.message || 'Login failed. Please check your credentials.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>

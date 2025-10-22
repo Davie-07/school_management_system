@@ -1,0 +1,22 @@
+{
+  "name": "kandara-tech-college-system",
+  "version": "1.0.0",
+  "description": "School Management System for Kandara Technical College",
+  "scripts": {
+    "install-server": "cd server && npm install",
+    "start": "cd server && npm start",
+    "dev": "cd server && npm run dev",
+    "seed": "cd server && node seed.js",
+    "setup": "npm run install-server && npm run seed"
+  },
+  "keywords": [
+    "school",
+    "management",
+    "system",
+    "kandara",
+    "technical",
+    "college"
+  ],
+  "author": "Kandara Technical College",
+  "license": "ISC"
+}
